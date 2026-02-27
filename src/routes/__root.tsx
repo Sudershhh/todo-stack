@@ -22,10 +22,15 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title: "Todo App",
       },
     ],
     links: [
+      {
+        rel: "icon",
+        href: "/todo.png",
+        type: "image/png",
+      },
       {
         rel: "stylesheet",
         href: appCss,
