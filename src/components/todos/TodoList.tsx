@@ -7,7 +7,7 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { TodoItem } from "./TodoItem";
 import { TodoSkeleton } from "./TodoSkeleton";
 
-const ROW_HEIGHT = 88;
+const ROW_HEIGHT = 112;
 
 export function TodoList() {
   const {
@@ -118,7 +118,10 @@ export function TodoList() {
             })}
           </ul>
         </div>
-        <div ref={sentinelRef} className="h-8 min-h-8 flex items-center justify-center">
+        <div
+          ref={sentinelRef}
+          className="h-8 min-h-8 flex items-center justify-center"
+        >
           {isFetchingNextPage ? (
             <p
               className="text-xs text-muted-foreground"

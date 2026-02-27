@@ -11,7 +11,7 @@ export function TodoItem({ todo, onToggle }: TodoItemProps) {
   const isOptimistic = todo.id.startsWith("offline-");
 
   return (
-    <motion.li
+    <motion.div
       layout
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
@@ -57,6 +57,6 @@ export function TodoItem({ todo, onToggle }: TodoItemProps) {
           {new Date(todo.createdAt).toLocaleString()}
         </p>
       </div>
-    </motion.li>
+    </motion.div>
   );
 }
