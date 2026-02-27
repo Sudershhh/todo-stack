@@ -52,8 +52,14 @@ export async function getTodos(
   const rows = await db
     .select()
     .from(todos)
-    .where(decoded ? lt(todos.createdAt, decoded.createdAt) : undefined)
-    .orderBy(desc(todos.createdAt))
+    .where(
+      decoded
+        ? decoded.id
+          ? sql`(${todos.createdAt} < ${decoded.createdAt} OR (${todos.createdAt} = ${decoded.createdAt} AND ${todos.id} < ${decoded.id}))`
+          : lt(todos.createdAt, decoded.createdAt)
+        : undefined,
+    )
+    .orderBy(desc(todos.createdAt), desc(todos.id))
     .limit(limit + 1)
 
   const hasMore = rows.length > limit

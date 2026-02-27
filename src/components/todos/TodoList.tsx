@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useCallback, useState, useLayoutEffect } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
 import { useTodos } from "@/hooks/useTodos";
@@ -6,6 +6,8 @@ import { useToggleTodo } from "@/hooks/useToggleTodo";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { TodoItem } from "./TodoItem";
 import { TodoSkeleton } from "./TodoSkeleton";
+
+const ROW_HEIGHT = 88;
 
 export function TodoList() {
   const {
@@ -21,18 +23,40 @@ export function TodoList() {
 
   const parentRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const [scrollReady, setScrollReady] = useState(false);
+
+  useLayoutEffect(() => {
+    if (parentRef.current && sentinelRef.current) setScrollReady(true);
+  });
+
+  const fetchStateRef = useRef({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  });
+  fetchStateRef.current = {
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  };
+
+  const onSentinelVisible = useCallback(() => {
+    const s = fetchStateRef.current;
+    if (s.hasNextPage && !s.isFetchingNextPage) {
+      s.fetchNextPage();
+    }
+  }, []);
 
   const rowVirtualizer = useVirtualizer({
     count: todos.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 72,
+    estimateSize: () => ROW_HEIGHT,
     overscan: 5,
   });
 
-  useIntersectionObserver(sentinelRef, () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
+  useIntersectionObserver(sentinelRef, onSentinelVisible, {
+    root: parentRef,
+    enabled: scrollReady,
   });
 
   if (isLoading) {
@@ -71,35 +95,39 @@ export function TodoList() {
             position: "relative",
           }}
         >
-          <ul className="absolute left-0 top-0 w-full space-y-2">
+          <ul className="absolute left-0 top-0 w-full list-none p-0 m-0">
             {rowVirtualizer.getVirtualItems().map((virtualRow) => {
               const todo = todos[virtualRow.index];
               return (
-                <div
+                <li
                   key={todo.id}
                   data-index={virtualRow.index}
-                  ref={rowVirtualizer.measureElement}
+                  className="overflow-hidden pb-2"
                   style={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    width: "100%",
+                    height: ROW_HEIGHT,
                     transform: `translateY(${virtualRow.start}px)`,
                   }}
                 >
                   <TodoItem todo={todo} onToggle={toggle} />
-                </div>
+                </li>
               );
             })}
           </ul>
         </div>
-      </div>
-
-      <div ref={sentinelRef} className="h-8">
-        {isFetchingNextPage ? (
-          <p
-            className="flex items-center justify-center text-xs text-muted-foreground"
-            aria-label="Loading more todos"
-          >
-            Loading more…
-          </p>
-        ) : null}
+        <div ref={sentinelRef} className="h-8 min-h-8 flex items-center justify-center">
+          {isFetchingNextPage ? (
+            <p
+              className="text-xs text-muted-foreground"
+              aria-label="Loading more todos"
+            >
+              Loading more…
+            </p>
+          ) : null}
+        </div>
       </div>
     </div>
   );

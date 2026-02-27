@@ -119,12 +119,21 @@ async function queueToggleImpl(id: string): Promise<void> {
   await tx.done
 }
 
-async function flushQueueImpl(queryClient: QueryClient): Promise<void> {
+async function deleteQueuedItemById(id: number): Promise<void> {
   const db = await getDb()
   const tx = db.transaction(QUEUE_STORE, 'readwrite')
   const store = tx.objectStore(QUEUE_STORE)
+  await store.delete(id)
+  await tx.done
+}
 
+async function flushQueueImpl(queryClient: QueryClient): Promise<void> {
+  const db = await getDb()
+  const tx = db.transaction(QUEUE_STORE, 'readonly')
+  const store = tx.objectStore(QUEUE_STORE)
   const all = (await store.getAll()) as PendingMutation[]
+  await tx.done
+
   const sorted = all.sort((a, b) => a.timestamp - b.timestamp)
 
   for (const item of sorted) {
@@ -140,15 +149,13 @@ async function flushQueueImpl(queryClient: QueryClient): Promise<void> {
       }
 
       if (typeof item.id === 'number') {
-        await store.delete(item.id)
+        await deleteQueuedItemById(item.id)
       }
     } catch {
       // Stop processing on first failure to preserve ordering
       break
     }
   }
-
-  await tx.done
 
   await queryClient.invalidateQueries({
     queryKey: ['todos', 'list'],

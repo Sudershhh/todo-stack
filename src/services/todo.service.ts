@@ -1,4 +1,5 @@
 import type { PaginatedTodos, CreateTodoInput, Todo } from '@/types/todo'
+import { LIST_PAGE_SIZE } from '@/types/todo'
 import {
   fetchTodosServerFn,
   createTodoServerFn,
@@ -20,11 +21,15 @@ function createOfflineTempId(): string {
 }
 
 export const todoService = {
-  async getTodos(cursor?: string): Promise<PaginatedTodos> {
+  async getTodos(
+    cursor?: string,
+    limit: number = LIST_PAGE_SIZE,
+  ): Promise<PaginatedTodos> {
     try {
       const page = await fetchTodosServerFn({
         data: {
           cursor,
+          limit,
         },
       })
 

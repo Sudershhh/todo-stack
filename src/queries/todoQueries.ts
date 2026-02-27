@@ -2,6 +2,7 @@ import { infiniteQueryOptions } from '@tanstack/react-query'
 
 import { todoService } from '@/services/todo.service'
 import type { PaginatedTodos } from '@/types/todo'
+import { LIST_PAGE_SIZE } from '@/types/todo'
 import { todoKeys } from './todoKeys'
 
 function isOfflineError(error: unknown): boolean {
@@ -19,7 +20,7 @@ function isOfflineError(error: unknown): boolean {
 export const todosInfiniteQueryOptions = infiniteQueryOptions({
   queryKey: todoKeys.lists(),
   queryFn: ({ pageParam }) =>
-    todoService.getTodos(pageParam as string | undefined),
+    todoService.getTodos(pageParam as string | undefined, LIST_PAGE_SIZE),
   initialPageParam: undefined as string | undefined,
   getNextPageParam: (lastPage: PaginatedTodos) => lastPage.nextCursor ?? undefined,
   staleTime: 1000 * 30,

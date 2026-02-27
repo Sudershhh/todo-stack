@@ -28,3 +28,6 @@ export type PaginatedTodos = z.infer<typeof PaginatedTodosSchema>
 
 export const PAGE_SIZE = 25
 
+// Page size specifically for the main todos list UI
+export const LIST_PAGE_SIZE = 8
+
