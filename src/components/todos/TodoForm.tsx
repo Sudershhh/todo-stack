@@ -29,7 +29,7 @@ export function TodoForm({ onSubmit, isPending, error }: TodoFormProps) {
   return (
     <form
       onSubmit={submit}
-      className="space-y-4 rounded-xl border border-border bg-card p-4 shadow-md"
+      className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-md"
     >
       <div className="space-y-1">
         <label htmlFor="title" className="text-sm font-medium text-foreground">

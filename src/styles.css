@@ -53,6 +53,11 @@
   --shadow-lg: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 4px 6px -1px oklch(0.00 0 0 / 0.10);
   --shadow-xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 8px 10px -1px oklch(0.00 0 0 / 0.10);
   --shadow-2xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.25);
+
+  --scrollbar-track: var(--muted);
+  --scrollbar-thumb: var(--accent-foreground);
+  --scrollbar-thumb-hover: var(--primary);
+  --scrollbar-width-thin: 6px;
 }
 
 .dark {
@@ -96,6 +101,11 @@
   --shadow-lg: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 4px 6px -1px oklch(0.00 0 0 / 0.10);
   --shadow-xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 8px 10px -1px oklch(0.00 0 0 / 0.10);
   --shadow-2xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.25);
+
+  --scrollbar-track: var(--muted);
+  --scrollbar-thumb: var(--sidebar-foreground);
+  --scrollbar-thumb-hover: var(--primary);
+  --scrollbar-width-thin: 6px;
 }
 
 @theme inline {
@@ -153,6 +163,32 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+  .todo-scroll {
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+  .todo-scroll::-webkit-scrollbar-thumb {
+    background-color: color-mix(
+      in oklch,
+      var(--scrollbar-thumb) 70%,
+      transparent
+    );
+  }
+  *::-webkit-scrollbar {
+    width: var(--scrollbar-width-thin);
+    height: var(--scrollbar-width-thin);
+  }
+  *::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 9999px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
   }
   body {
     @apply bg-background text-foreground;

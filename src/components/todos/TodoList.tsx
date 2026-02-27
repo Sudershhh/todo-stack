@@ -80,7 +80,7 @@ export function TodoList() {
 
   if (!todos.length) {
     return (
-      <div className="rounded-lg border border-dashed border-muted bg-card px-4 py-8 text-center text-sm text-muted-foreground">
+      <div className="rounded-xl border border-dashed border-muted bg-card px-6 py-10 text-center text-sm text-muted-foreground text-pretty">
         No todos yet. Create your first one to get started.
       </div>
     );
@@ -88,7 +88,10 @@ export function TodoList() {
 
   return (
     <div className="space-y-3">
-      <div ref={parentRef} className="max-h-[70vh] overflow-auto pr-1">
+      <div
+        ref={parentRef}
+        className="todo-scroll max-h-[70vh] overflow-auto pr-1 pt-1 pb-2"
+      >
         <div
           style={{
             height: `${rowVirtualizer.getTotalSize()}px`,
@@ -102,7 +105,7 @@ export function TodoList() {
                 <li
                   key={todo.id}
                   data-index={virtualRow.index}
-                  className="overflow-hidden pb-2"
+                  className="pb-2"
                   style={{
                     position: "absolute",
                     left: 0,

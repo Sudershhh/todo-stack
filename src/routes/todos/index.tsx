@@ -15,10 +15,10 @@ export const Route = createFileRoute('/todos/')({
 
 function TodosPage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-4 py-6">
+    <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center gap-6 px-4 py-8">
       <OfflineBanner />
 
-      <section className="space-y-4 rounded-xl border border-border bg-card/60 p-4 shadow-lg">
+      <section className="space-y-5 rounded-2xl border border-border bg-card p-5 shadow-md">
         <header className="flex items-center justify-between gap-3">
           <div>
             <h1 className="text-lg font-semibold text-foreground">
