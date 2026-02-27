@@ -1,8 +1,14 @@
 import { infiniteQueryOptions } from '@tanstack/react-query'
 
+import { LIST_PAGE_SIZE } from '@/config/todos'
+import {
+  QUERY_GC_TIME_MS,
+  QUERY_REFETCH_ON_WINDOW_FOCUS,
+  QUERY_RETRY_COUNT,
+  QUERY_STALE_TIME_MS,
+} from '@/config/query'
 import { todoService } from '@/services/todo.service'
 import type { PaginatedTodos } from '@/types/todo'
-import { LIST_PAGE_SIZE } from '@/types/todo'
 import { todoKeys } from './todoKeys'
 
 function isOfflineError(error: unknown): boolean {
@@ -23,12 +29,12 @@ export const todosInfiniteQueryOptions = infiniteQueryOptions({
     todoService.getTodos(pageParam as string | undefined, LIST_PAGE_SIZE),
   initialPageParam: undefined as string | undefined,
   getNextPageParam: (lastPage: PaginatedTodos) => lastPage.nextCursor ?? undefined,
-  staleTime: 1000 * 30,
-  gcTime: 1000 * 60 * 5,
-  refetchOnWindowFocus: false,
+  staleTime: QUERY_STALE_TIME_MS,
+  gcTime: QUERY_GC_TIME_MS,
+  refetchOnWindowFocus: QUERY_REFETCH_ON_WINDOW_FOCUS,
   retry(failureCount, error) {
     if (isOfflineError(error)) return false
-    return failureCount < 2
+    return failureCount < QUERY_RETRY_COUNT
   },
 })
 

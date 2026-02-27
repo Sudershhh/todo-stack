@@ -1,13 +1,12 @@
 import { useRef, useCallback, useState, useLayoutEffect } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
+import { TODO_LIST_ROW_HEIGHT } from "@/config/todos";
 import { useTodos } from "@/hooks/useTodos";
 import { useToggleTodo } from "@/hooks/useToggleTodo";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { TodoItem } from "./TodoItem";
 import { TodoSkeleton } from "./TodoSkeleton";
-
-const ROW_HEIGHT = 112;
 
 export function TodoList() {
   const {
@@ -19,7 +18,7 @@ export function TodoList() {
     isError,
     error,
   } = useTodos();
-  const { toggle } = useToggleTodo();
+  const { toggle, errorMessage: toggleErrorMessage } = useToggleTodo();
 
   const parentRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
@@ -50,7 +49,7 @@ export function TodoList() {
   const rowVirtualizer = useVirtualizer({
     count: todos.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => ROW_HEIGHT,
+    estimateSize: () => TODO_LIST_ROW_HEIGHT,
     overscan: 5,
   });
 
@@ -88,6 +87,11 @@ export function TodoList() {
 
   return (
     <div className="space-y-3">
+      {toggleErrorMessage ? (
+        <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+          Failed to update todo. {toggleErrorMessage}
+        </div>
+      ) : null}
       <div
         ref={parentRef}
         className="todo-scroll max-h-[70vh] overflow-auto pr-1 pt-1 pb-2"
@@ -101,6 +105,9 @@ export function TodoList() {
           <ul className="absolute left-0 top-0 w-full list-none p-0 m-0">
             {rowVirtualizer.getVirtualItems().map((virtualRow) => {
               const todo = todos[virtualRow.index];
+              if (!todo) {
+                return null;
+              }
               return (
                 <li
                   key={todo.id}
@@ -111,7 +118,7 @@ export function TodoList() {
                     left: 0,
                     top: 0,
                     width: "100%",
-                    height: ROW_HEIGHT,
+                    height: TODO_LIST_ROW_HEIGHT,
                     transform: `translateY(${virtualRow.start}px)`,
                   }}
                 >

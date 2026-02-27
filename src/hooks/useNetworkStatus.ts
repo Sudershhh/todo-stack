@@ -24,8 +24,13 @@ export function useNetworkStatus() {
       setIsOnline(true)
 
       if (!hasFlushedQueue) {
-        await offlineService.flushQueue(queryClient)
-        setHasFlushedQueue(true)
+        const result = await offlineService.flushQueue(queryClient)
+
+        if (!result.error && result.remaining === 0) {
+          setHasFlushedQueue(true)
+        } else {
+          setHasFlushedQueue(false)
+        }
       }
     }
 

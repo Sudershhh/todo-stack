@@ -11,7 +11,7 @@ function NewTodoPage() {
   const {
     submit,
     isPending,
-    error,
+    errorMessage,
   } = useCreateTodo()
 
   return (
@@ -36,7 +36,7 @@ function NewTodoPage() {
       <TodoForm
         onSubmit={submit}
         isPending={isPending}
-        error={error instanceof Error ? error.message : null}
+        error={errorMessage}
       />
     </main>
   )

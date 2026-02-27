@@ -1,9 +1,9 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
+import { PAGE_SIZE } from '@/config/todos'
 import {
   CreateTodoSchema,
-  PAGE_SIZE,
   type PaginatedTodos,
   type Todo,
 } from '@/types/todo'

@@ -3,19 +3,26 @@ import { motion } from "motion/react";
 import { useUiStore } from "@/store/uiStore";
 
 export function OfflineBanner() {
-  const { isOnline, pendingQueueCount } = useUiStore();
+  const { isOnline, pendingQueueCount, queueError } = useUiStore();
 
-  if (isOnline && pendingQueueCount === 0) {
+  if (isOnline && pendingQueueCount === 0 && !queueError) {
     return null;
   }
 
-  const message = isOnline
-    ? "Reconnected. Syncing your changes…"
-    : pendingQueueCount > 0
-      ? `You’re offline. ${pendingQueueCount} change${
-          pendingQueueCount === 1 ? "" : "s"
-        } will sync when you reconnect.`
-      : "You’re offline. Changes will sync when you reconnect.";
+  let message: string;
+
+  if (!isOnline && pendingQueueCount > 0) {
+    message = `You’re offline. ${pendingQueueCount} change${
+      pendingQueueCount === 1 ? "" : "s"
+    } will sync when you reconnect.`;
+  } else if (!isOnline) {
+    message = "You’re offline. Changes will sync when you reconnect.";
+  } else if (queueError) {
+    message =
+      "We couldn’t sync some changes yet. We’ll keep retrying automatically.";
+  } else {
+    message = "Reconnected. Syncing your changes…";
+  }
 
   return (
     <motion.div

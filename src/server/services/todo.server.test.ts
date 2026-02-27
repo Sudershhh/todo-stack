@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import { PAGE_SIZE } from '@/types/todo'
+import { PAGE_SIZE } from '@/config/todos'
 
 describe('todo.server service', () => {
   it('uses the configured page size constant', () => {

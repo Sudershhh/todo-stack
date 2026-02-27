@@ -2,13 +2,20 @@ import { desc, lt, sql } from 'drizzle-orm'
 
 import { db } from '../db/client'
 import { todos } from '../db/schema'
+import { PAGE_SIZE } from '@/config/todos'
 import {
-  PAGE_SIZE,
   PaginatedTodosSchema,
+  TodoSchema,
   type CreateTodoInput,
   type PaginatedTodos,
   type Todo,
 } from '@/types/todo'
+import { z } from 'zod'
+
+const CursorSchema = z.object({
+  createdAt: z.string().datetime(),
+  id: z.string().uuid().optional(),
+})
 
 function encodeCursor(createdAt: Date, id: string): string {
   const payload = JSON.stringify({
@@ -23,25 +30,26 @@ function decodeCursor(cursor?: string): { createdAt: Date; id?: string } | null 
   if (!cursor) return null
   try {
     const decoded = Buffer.from(cursor, 'base64').toString('utf8')
-    const parsed = JSON.parse(decoded) as { createdAt: string; id?: string }
-    return {
-      createdAt: new Date(parsed.createdAt),
-      id: parsed.id,
+    const parsed = CursorSchema.parse(JSON.parse(decoded))
+    const createdAt = new Date(parsed.createdAt)
+    if (Number.isNaN(createdAt.getTime())) {
+      return null
     }
+    return { createdAt, id: parsed.id }
   } catch {
     return null
   }
 }
 
 function mapRowToTodo(row: typeof todos.$inferSelect): Todo {
-  return {
+  return TodoSchema.parse({
     id: row.id,
     title: row.title,
     description: row.description ?? null,
     isCompleted: row.isCompleted,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
-  }
+  })
 }
 
 export async function getTodos(
@@ -67,15 +75,19 @@ export async function getTodos(
 
   let nextCursor: string | null = null
   if (hasMore) {
-    const last = rows[rows.length - 2] ?? rows[rows.length - 1]
-    nextCursor = encodeCursor(last.createdAt, last.id)
+    const index = rows.length >= 2 ? rows.length - 2 : rows.length - 1
+    const last = rows[index]
+    if (last) {
+      nextCursor = encodeCursor(last.createdAt, last.id)
+    }
   }
 
-  const [{ count }] = await db
+  const countResult = await db
     .select({
       count: sql<number>`cast(count(*) as int)`,
     })
     .from(todos)
+  const count = countResult[0]?.count ?? 0
 
   const result: PaginatedTodos = {
     items: items.map(mapRowToTodo),
@@ -93,6 +105,10 @@ export async function createTodo(input: CreateTodoInput): Promise<Todo> {
       description: input.description,
     })
     .returning()
+
+  if (!row) {
+    throw new Error('Failed to create todo')
+  }
 
   return mapRowToTodo(row)
 }
@@ -116,6 +132,10 @@ export async function toggleTodo(id: string): Promise<Todo> {
     })
     .where(sql`${todos.id} = ${id}`)
     .returning()
+
+  if (!updated) {
+    throw new Error('Failed to update todo')
+  }
 
   return mapRowToTodo(updated)
 }

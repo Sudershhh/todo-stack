@@ -7,6 +7,8 @@ interface UiStore {
   setPendingQueueCount: (n: number) => void
   hasFlushedQueue: boolean
   setHasFlushedQueue: (v: boolean) => void
+  queueError: string | null
+  setQueueError: (message: string | null) => void
 }
 
 export const useUiStore = create<UiStore>((set) => ({
@@ -18,5 +20,7 @@ export const useUiStore = create<UiStore>((set) => ({
   hasFlushedQueue: false,
   setHasFlushedQueue: (hasFlushedQueue) =>
     set({ hasFlushedQueue }),
+   queueError: null,
+   setQueueError: (queueError) => set({ queueError }),
 }))
 

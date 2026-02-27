@@ -1,5 +1,5 @@
+import { LIST_PAGE_SIZE } from '@/config/todos'
 import type { PaginatedTodos, CreateTodoInput, Todo } from '@/types/todo'
-import { LIST_PAGE_SIZE } from '@/types/todo'
 import {
   fetchTodosServerFn,
   createTodoServerFn,
