@@ -1,17 +1,17 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
-import type { QueryClient } from '@tanstack/react-query'
+import { Link, createFileRoute } from "@tanstack/react-router";
+import type { QueryClient } from "@tanstack/react-query";
 
-import { todosInfiniteQueryOptions } from '@/queries/todoQueries'
-import { TodoList } from '@/components/todos/TodoList'
-import { OfflineBanner } from '@/components/todos/OfflineBanner'
+import { todosInfiniteQueryOptions } from "@/queries/todoQueries";
+import { TodoList } from "@/components/todos/TodoList";
+import { OfflineBanner } from "@/components/todos/OfflineBanner";
 
-export const Route = createFileRoute('/todos/')({
+export const Route = createFileRoute("/todos/")({
   loader: async ({ context }) => {
-    const queryClient = (context as { queryClient: QueryClient }).queryClient
-    await queryClient.prefetchInfiniteQuery(todosInfiniteQueryOptions)
+    const queryClient = (context as { queryClient: QueryClient }).queryClient;
+    await queryClient.prefetchInfiniteQuery(todosInfiniteQueryOptions);
   },
   component: TodosPage,
-})
+});
 
 function TodosPage() {
   return (
@@ -21,12 +21,7 @@ function TodosPage() {
       <section className="space-y-5 rounded-2xl border border-border bg-card p-5 shadow-md">
         <header className="flex items-center justify-between gap-3">
           <div>
-            <h1 className="text-lg font-semibold text-foreground">
-              Todos
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              Infinite, offline-first list with optimistic updates.
-            </p>
+            <h1 className="text-lg font-semibold text-foreground">Todos</h1>
           </div>
           <Link
             to="/todos/new"
@@ -39,6 +34,5 @@ function TodosPage() {
         <TodoList />
       </section>
     </main>
-  )
+  );
 }
-
