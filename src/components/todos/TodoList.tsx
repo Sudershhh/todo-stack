@@ -3,7 +3,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 
 import { TODO_LIST_ROW_HEIGHT } from "@/config/todos";
 import { useTodos } from "@/hooks/useTodos";
-import { useToggleTodo } from "@/hooks/useToggleTodo";
+import { useTodoMutations } from "@/hooks/useTodoMutations";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { TodoItem } from "./TodoItem";
 import { TodoSkeleton } from "./TodoSkeleton";
@@ -18,7 +18,7 @@ export function TodoList() {
     isError,
     error,
   } = useTodos();
-  const { toggle, errorMessage: toggleErrorMessage } = useToggleTodo();
+  const { toggle, errorMessage: toggleErrorMessage } = useTodoMutations().toggle;
 
   const parentRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);

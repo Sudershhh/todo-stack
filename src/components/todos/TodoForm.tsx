@@ -83,7 +83,7 @@ export function TodoForm({ onSubmit, isPending, error }: TodoFormProps) {
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground shadow-md shadow-primary/30 transition hover:shadow-lg disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground shadow-md shadow-primary/30 transition hover:shadow-lg disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
         >
           {isPending ? "Creating…" : "Create todo"}
         </button>
