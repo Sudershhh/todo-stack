@@ -12,14 +12,14 @@ export function OfflineBanner() {
   let message: string;
 
   if (!isOnline && pendingQueueCount > 0) {
-    message = `You’re offline. ${pendingQueueCount} change${
+    message = `You're offline. Your changes are saved. ${pendingQueueCount} change${
       pendingQueueCount === 1 ? "" : "s"
     } will sync when you reconnect.`;
   } else if (!isOnline) {
-    message = "You’re offline. Changes will sync when you reconnect.";
+    message = "You're offline. Changes will sync when you reconnect.";
   } else if (queueError) {
     message =
-      "We couldn’t sync some changes yet. We’ll keep retrying automatically.";
+      "Some changes couldn't sync yet. We'll retry when you're online.";
   } else {
     message = "Reconnected. Syncing your changes…";
   }

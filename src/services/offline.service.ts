@@ -129,9 +129,9 @@ async function queueCreateImpl(
   }
 
   await store.add(mutation)
+  const count = await store.count()
   await tx.done
 
-  const count = await store.count()
   setPendingQueueCount(count)
 }
 
@@ -147,9 +147,9 @@ async function queueToggleImpl(id: string): Promise<void> {
   }
 
   await store.add(mutation)
+  const count = await store.count()
   await tx.done
 
-  const count = await store.count()
   setPendingQueueCount(count)
 }
 
