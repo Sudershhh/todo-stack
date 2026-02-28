@@ -27,6 +27,19 @@ export const Route = createRootRoute({
     ],
     links: [
       {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+      },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap",
+      },
+      {
         rel: "icon",
         href: "/todo.png",
         type: "image/png",
@@ -88,7 +101,7 @@ function RootErrorBoundary() {
         <HeadContent />
       </head>
       <body>
-        <main style={{ padding: "2rem", fontFamily: "system-ui, sans-serif" }}>
+        <main style={{ padding: "2rem", fontFamily: '"Nunito", sans-serif' }}>
           <h1 style={{ fontSize: "1.5rem", marginBottom: "0.75rem" }}>
             Oops, something went wrong
           </h1>
