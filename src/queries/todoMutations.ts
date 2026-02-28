@@ -18,6 +18,7 @@ function updateTodosInCache(
 
 export function createTodoMutationOptions(queryClient: QueryClient) {
   return {
+    mutationKey: ['todos', 'create'] as const,
     mutationFn: (input: Parameters<typeof todoService.createTodo>[0]) =>
       todoService.createTodo(input),
     onMutate: async (
@@ -84,6 +85,7 @@ export function createTodoMutationOptions(queryClient: QueryClient) {
 
 export function toggleTodoMutationOptions(queryClient: QueryClient) {
   return {
+    mutationKey: ['todos', 'toggle'] as const,
     mutationFn: (id: string) => todoService.toggleTodo(id),
     onMutate: async (id: string) => {
       await queryClient.cancelQueries({ queryKey: todoKeys.lists() })

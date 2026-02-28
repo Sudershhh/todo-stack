@@ -18,7 +18,9 @@ function isOfflineOrIdbError(error: unknown): boolean {
     lower.includes('idbobjectstore') ||
     lower.includes('indexeddb') ||
     lower.includes('quota') ||
-    lower.includes('transaction')
+    lower.includes('transaction') ||
+    lower.includes('failed to fetch') ||
+    lower.includes('network error')
   )
 }
 

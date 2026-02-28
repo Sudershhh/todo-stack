@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 
@@ -6,6 +7,7 @@ import {
   createTodoMutationOptions,
   toggleTodoMutationOptions,
 } from "@/queries/todoMutations";
+import { useUiStore } from "@/store/uiStore";
 import type { CreateTodoInput } from "@/types/todo";
 
 export function useTodoMutations() {
@@ -14,6 +16,13 @@ export function useTodoMutations() {
 
   const createMutation = useMutation(createTodoMutationOptions(queryClient));
   const toggleMutation = useMutation(toggleTodoMutationOptions(queryClient));
+
+  useEffect(() => {
+    return useUiStore.getState().registerFlushSuccessReset(() => {
+      createMutation.reset();
+      toggleMutation.reset();
+    });
+  }, [createMutation, toggleMutation]);
 
   const createSubmit = async (input: CreateTodoInput) => {
     const result = await createMutation.mutateAsync(input);

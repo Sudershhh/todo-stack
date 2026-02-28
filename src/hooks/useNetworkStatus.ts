@@ -28,6 +28,7 @@ export function useNetworkStatus() {
 
         if (!result.error && result.remaining === 0) {
           setHasFlushedQueue(true)
+          useUiStore.getState().runFlushSuccessResetters()
         } else {
           setHasFlushedQueue(false)
         }
